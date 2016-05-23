@@ -1,0 +1,25 @@
+{
+  "name": "diethard-ried",
+  "version": "1.0.0",
+  "description": "A discord bot that will inform us of updates to our favorite games, and an ambitious reporter who loves impactful (and sometimes chaotic) news.",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^7.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javakat/diethard-ried.git"
+  },
+  "author": "Jake Harris (milieu@javakat.io)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/javakat/diethard-ried/issues"
+  },
+  "homepage": "https://github.com/javakat/diethard-ried#readme"
+}
