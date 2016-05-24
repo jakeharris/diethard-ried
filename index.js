@@ -1,13 +1,8 @@
 var Discord = require('discord.js'),
-    fs = require ('fs'),
-    readline = require('readline')
+    TokenManager = require('./src/token-manager')
 
 // list of API tokens
-var tokens = {},
-    rl = readline.createInterface({
-      input: fs.createReadStream('./tokens'),
-      terminal: false      
-    }),
+var tm,
     diethard = new Discord.Client()
 
 diethard.on('message', function(message) {
@@ -19,13 +14,12 @@ diethard.on('message', function(message) {
 
 // tokens should be of the format "<API name> <token>"
 // (that is, space-delimited)
-rl.on('line', function (line) {
-  console.log('reading')
-  var words = line.split(' ')
-  tokens[words[0]] = words[1]
-}).on('close', function () {
-  diethard.loginWithToken(tokens['discord']).then(function () { console.log('logged in!') }).catch(function (err) { console.log(err); exit() })
-})
+tm = new TokenManager('./tokens').onTokensLoaded(function () {
+  diethard.loginWithToken(this.tokens['discord']).then(function () { console.log('logged in!') }).catch(function (err) { console.log(err); exit() })
+}).parseTokens()
+
+
+  
 
 
 
