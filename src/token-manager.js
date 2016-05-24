@@ -3,6 +3,10 @@ var fs = require ('fs'),
 
 module.exports = TokenManager
 
+// Manager for relevant API tokens.
+// Input: filePath (path to file containing API tokens).
+// If no filePath is supplied, it will search for a file in
+// the parent directory named 'tokens'.
 function TokenManager (filePath) {
   
   this.filePath = '../tokens'
@@ -32,7 +36,6 @@ TokenManager.prototype.parseTokens = function () {
   })
   rl.on('line', function (line) {
     var words = line.split(' ')
-    console.log(words)
     if(words.length !== 2)
       throw new Error('Improper formatting. (Name-token pairs are space-delimited, and separate from the next pair by newline.)')
     this.tokens[words[0]] = words[1]
