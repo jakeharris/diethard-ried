@@ -11,7 +11,7 @@ var tm,
 
 diethard.on('message', function(message) {
     if(message.content === 'ping') {
-      console.log('we got there boys')
+      console.log('ponging...')
       diethard.reply(message, 'pong')
     }
 })
@@ -19,6 +19,7 @@ diethard.on('ready', function () {
   while(!doneUpdating) {}
   for(var s in diethard.servers) {
     if(!diethard.servers[s]) continue
+    
     var c = diethard.servers[s].defaultChannel
     // either #general or the first text channel
     postAllUpdates(c, nm.updatesReceived)
@@ -28,9 +29,14 @@ diethard.on('ready', function () {
 nm = new NewsManager('./news', {
     vermintide: VermintideChecker
 }).onFinishCheckingForUpdates(function () {
+  console.log(this.checked + '/' + Object.keys(this.subscriptions).length + ' subscriptions checked')
+  
+  if(this.checked < Object.keys(this.subscriptions).length) return;
+  
   if(this.updatesReceived !== {}) {
     this.writeUpdatesToFile()
     doneUpdating = true
+    this.checked = 0
   }
 })
 
@@ -49,8 +55,9 @@ tm = new TokenManager('./tokens').onTokensLoaded(function () {
 
 var postAllUpdates = function (channel, updates) {
   for(var u in updates) {
-    diethard.sendMessage(channel, "@everyone A new update has been released for " + updates[u].name + ":")
-    diethard.sendMessage(channel, updates[u].url)
+    diethard.sendMessage(channel, '@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':', function () {
+      diethard.sendMessage(channel, updates[u].url)
+    }.bind(this))
   }
 }  
 

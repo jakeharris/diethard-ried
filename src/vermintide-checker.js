@@ -18,8 +18,11 @@ const DEFAULT_WHITELIST = [
 // Input: date -- the date of the latest update.
 // Input: lists -- an object {} containing up to two arrays, whitelist and blacklist. Keywords used to filter posts.
 function VermintideChecker (date, lists) {
-  if(date === undefined)
-    this.date = null
+  
+  this.date = null
+  if(date !== undefined) {
+    this.date = date
+  }
     
   if(lists) {
     if(lists.whitelist) 
@@ -32,37 +35,55 @@ function VermintideChecker (date, lists) {
     this.blacklist = DEFAULT_BLACKLIST
   }
   
-  this.onDoneMakingRequestsHandler = this.DEFAULT_ON_DONE_MAKING_REQUESTS_HANDLER
-  this.onDoneCheckingHandler = null
+  this.onFinishMakingRequestsHandler = this.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER
+  this.onFinishCheckingHandler = null
+  
+  return this
 }
 
 VermintideChecker.prototype = Object.create(Subscription.prototype)
 VermintideChecker.prototype.constructor = VermintideChecker
 
 VermintideChecker.prototype.check = function () {
-  request('http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=235540&count=10&format=json', this.onDoneMakingRequestsHandler(error, response, body))
+  request('http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=235540&count=10&format=json', this.onFinishMakingRequestsHandler.bind(this))
 }
-VermintideChecker.prototype.onDoneMakingRequests = function (callback) {
-  this.onDoneMakingRequestsHandler = callback
+VermintideChecker.prototype.onFinishMakingRequests = function (callback) {
+  this.onFinishMakingRequestsHandler = callback
   return this
 }
-VermintideChecker.prototype.onDoneChecking = function (callback) {
-  this.onDoneCheckingHandler = callback
+VermintideChecker.prototype.onFinishChecking = function (callback) {
+  this.onFinishCheckingHandler = callback
   return this
 }
 VermintideChecker.prototype.onNewerContentFound = function (callback) {
   Subscription.prototype.onNewerContentFound.call(this, callback)
   return this
 }
-VermintideChecker.prototype.DEFAULT_ON_DONE_MAKING_REQUESTS_HANDLER = function (error, response, body) {
+VermintideChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function (err, response, body) {
   if(err)
     throw new Error(err)
-  var items = response.appnews.newsitems,
+  
+  var items = JSON.parse(body).appnews.newsitems,
       update = null
+  
+  console.log('this')
+  console.log(this)
+  
+  // TODO: run a filter on items using whitelist and blacklist
+  
   for(var i in items) {
     var item = items[i]
-    if(this.date === null || item.date > this.date)
-      this.update = { date: item.date, url: item.url }
+    if(this.date === null || item.date > this.date) {
+      console.log(item.date + ' counts as an update')
+      this.date = item.date
+      update = { 
+        name: 'vermintide', 
+        data: { 
+          date: item.date, 
+          url: item.url 
+        }
+      }
+    }
   }
-  this.onDoneCheckingHandler(this.update)
+  this.onFinishCheckingHandler(update)
 }

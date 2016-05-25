@@ -17,8 +17,10 @@ function NewsManager(filePath, subscriptions) {
   this.updates = {}
   this.updatesReceived = {}
   this.subscriptions = subscriptions
+  this.checked = 0
   this.onNewsReadFromFileHandler = this.DEFAULT_ON_NEWS_READ_FROM_FILE_HANDLER
   this.onFinishSubscribingHandler = this.DEFAULT_ON_FINISH_SUBSCRIBING_HANDLER
+  this.onFinishCheckingHandler = this.DEFAULT_ON_FINISH_CHECKING_HANDLER
   this.onFinishCheckingForUpdatesHandler = null
   this.onNewerContentFoundHandler = this.DEFAULT_ON_NEWER_CONTENT_FOUND_HANDLER
   
@@ -65,17 +67,14 @@ NewsManager.prototype.subscribe = function () {
       this.updates[s]
     : null)
       .onNewerContentFound(this.onNewerContentFoundHandler.bind(this))
-      .onDoneChecking(this.onDoneCheckingHandler.bind(this))
+      .onFinishChecking(this.onFinishCheckingHandler.bind(this))
   }
   this.onFinishSubscribingHandler()
 }
 NewsManager.prototype.checkForUpdates = function () {
   for(var s in this.subscriptions) {
     this.subscriptions[s].check()
-    if(res !== null) 
-      this.updatesReceived[s] = res
   }
-  this.onFinishCheckingForUpdatesHandler()
 }
 NewsManager.prototype.writeUpdatesToFile = function () {
   for(var u in this.updatesReceived) {
@@ -101,8 +100,11 @@ NewsManager.prototype.onNewerContentFound = function (callback) {
   return this
 }
 
-NewsManager.prototype.DEFAULT_ON_DONE_CHECKING_HANDLER = function () {
-  this.updatesReceived[]
+NewsManager.prototype.DEFAULT_ON_FINISH_CHECKING_HANDLER = function (update) {
+  this.checked++ 
+  console.log(update)
+  if(update) this.onNewerContentFoundHandler(update)
+  this.onFinishCheckingForUpdatesHandler()
 }
 NewsManager.prototype.DEFAULT_ON_NEWS_READ_FROM_FILE_HANDLER = function () {
   return this.subscribe()
@@ -110,8 +112,11 @@ NewsManager.prototype.DEFAULT_ON_NEWS_READ_FROM_FILE_HANDLER = function () {
 NewsManager.prototype.DEFAULT_ON_FINISH_SUBSCRIBING_HANDLER = function () {
   return this.checkForUpdates()
 }
-NewsManager.prototype.DEFAULT_ON_NEWER_CONTENT_FOUND_HANDLER = function (res) {
-  this.updatesReceived[res.name] = res.content
+NewsManager.prototype.DEFAULT_ON_NEWER_CONTENT_FOUND_HANDLER = function (update) {
+  console.log('update')
+  console.log(update)
+  this.updatesReceived[update.name] = update.data
+  console.log(this.updatesReceived)
 }
 
 
