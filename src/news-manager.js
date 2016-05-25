@@ -63,7 +63,9 @@ NewsManager.prototype.subscribe = function () {
     this.subscriptions[s] = new this.subscriptions[s](
       (this.updates[s] !== undefined)?
       this.updates[s]
-    : null).onNewerContentFound(this.onNewerContentFoundHandler.bind(this)).onDoneChecking(this.onDoneCheckingHandler.bind(this))
+    : null)
+      .onNewerContentFound(this.onNewerContentFoundHandler.bind(this))
+      .onDoneChecking(this.onDoneCheckingHandler.bind(this))
   }
   this.onFinishSubscribingHandler()
 }

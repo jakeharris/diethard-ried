@@ -32,7 +32,8 @@ function VermintideChecker (date, lists) {
     this.blacklist = DEFAULT_BLACKLIST
   }
   
-  this.onDoneMakingRequestsHandler = null
+  this.onDoneMakingRequestsHandler = this.DEFAULT_ON_DONE_MAKING_REQUESTS_HANDLER
+  this.onDoneCheckingHandler = null
 }
 
 VermintideChecker.prototype = Object.create(Subscription.prototype)
@@ -45,7 +46,23 @@ VermintideChecker.prototype.onDoneMakingRequests = function (callback) {
   this.onDoneMakingRequestsHandler = callback
   return this
 }
+VermintideChecker.prototype.onDoneChecking = function (callback) {
+  this.onDoneCheckingHandler = callback
+  return this
+}
 VermintideChecker.prototype.onNewerContentFound = function (callback) {
   Subscription.prototype.onNewerContentFound.call(this, callback)
   return this
+}
+VermintideChecker.prototype.DEFAULT_ON_DONE_MAKING_REQUESTS_HANDLER = function (error, response, body) {
+  if(err)
+    throw new Error(err)
+  var items = response.appnews.newsitems,
+      update = null
+  for(var i in items) {
+    var item = items[i]
+    if(this.date === null || item.date > this.date)
+      this.update = { date: item.date, url: item.url }
+  }
+  this.onDoneCheckingHandler(this.update)
 }
