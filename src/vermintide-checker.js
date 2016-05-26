@@ -45,7 +45,7 @@ VermintideChecker.prototype = Object.create(Subscription.prototype)
 VermintideChecker.prototype.constructor = VermintideChecker
 
 VermintideChecker.prototype.check = function () {
-  request('http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=235540&count=10&format=json', this.onFinishMakingRequestsHandler.bind(this))
+  request('http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=235540&count=20&format=json', this.onFinishMakingRequestsHandler.bind(this))
 }
 VermintideChecker.prototype.onFinishMakingRequests = function (callback) {
   this.onFinishMakingRequestsHandler = callback
@@ -62,19 +62,29 @@ VermintideChecker.prototype.onNewerContentFound = function (callback) {
 VermintideChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function (err, response, body) {
   if(err)
     throw new Error(err)
-  
-  var items = JSON.parse(body).appnews.newsitems,
+    
+  var blacklist = VermintideChecker.prototype.BLACKLIST,
+      whitelist = VermintideChecker.prototype.WHITELIST
+    
+  var items = JSON.parse(body).appnews.newsitems.filter(function (e, i, a) {
+    console.log(e.title)
+    for(var b in blacklist){
+      console.log('blacklist item: ' + blacklist[b])
+      if(e.title.toLowerCase().indexOf(blacklist[b]) !== -1)
+        return false
+    }
+        
+    for(var w in whitelist) 
+      if(e.title.toLowerCase().indexOf(whitelist[w]) !== -1)
+        return true
+        
+    return false
+  }),
       update = null
-  
-  console.log('this')
-  console.log(this)
-  
-  // TODO: run a filter on items using whitelist and blacklist
   
   for(var i in items) {
     var item = items[i]
     if(this.date === null || item.date > this.date) {
-      console.log(item.date + ' counts as an update')
       this.date = item.date
       update = { 
         name: 'vermintide', 
@@ -87,3 +97,5 @@ VermintideChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function
   }
   this.onFinishCheckingHandler(update)
 }
+VermintideChecker.prototype.BLACKLIST = DEFAULT_BLACKLIST
+VermintideChecker.prototype.WHITELIST = DEFAULT_WHITELIST
