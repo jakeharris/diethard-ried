@@ -113,10 +113,7 @@ NewsManager.prototype.DEFAULT_ON_FINISH_SUBSCRIBING_HANDLER = function () {
   return this.checkForUpdates()
 }
 NewsManager.prototype.DEFAULT_ON_NEWER_CONTENT_FOUND_HANDLER = function (update) {
-  console.log('update')
-  console.log(update)
   this.updatesReceived[update.name] = update.data
-  console.log(this.updatesReceived)
 }
 
 
