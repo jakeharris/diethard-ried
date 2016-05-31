@@ -1,8 +1,5 @@
 var assert = require('assert'),
     
-    fs = require('fs'),
-    readline = require('rl'),
-    
     NewsManager = require('../src/news-manager'),
     VermintideChecker = require('../src/vermintide-checker')
 
@@ -23,7 +20,6 @@ describe('NewsManager', function () {
       assert.equal(nm.filePath, 'example-tokens/empty-tokens')
     })
   })
-  })
   context('readNewsFromFile()', function () {
     // testing this is hard...
     it('throws an error if the file doesn\'t exist')
@@ -35,36 +31,36 @@ describe('NewsManager', function () {
       })
     })
   })
-  context('subscribeTo()', function () {
+  context('subscribe()', function () {
     var nm
     beforeEach(function () {
       nm = new NewsManager()
     })
     it('throws an error if no subscription parameter is supplied', function () {
       assert.throws(function () {
-        nm.subscribeTo()
+        nm.subscribe()
       })
     })
     it('throws an error if the subscription parameter is not an object', function () {
       assert.throws(function () {
-        nm.subscribeTo(4)
+        nm.subscribe(4)
       })
     })
     it('throws an error if the subscription parameter is empty', function () {
       assert.throws(function () {
-        nm.subscribeTo({})
+        nm.subscribe({})
       })
     })
     it('throws an error if any value (in the kv pairs) does not implement the Subscription interface', function () {
       assert.throws(function () {
-        nm.subscribeTo({
+        nm.subscribe({
           vermintide: 'string'
         })
       })
     })
     it('succeeds if all subscriptions have Subscription interface implementations', function () {
       assert.doesNotThrow(function () {
-        nm.subscribeTo({
+        nm.subscribe({
           vermintide: VermintideChecker
         })
       })

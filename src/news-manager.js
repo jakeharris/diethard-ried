@@ -49,9 +49,12 @@ NewsManager.prototype.readNewsFromFile = function () {
     throw err
   })
 }
-NewsManager.prototype.subscribe = function () {
-  if(!this.subscriptions) 
+NewsManager.prototype.subscribe = function (subscriptions) {
+  if(!subscriptions && !this.subscriptions) 
     throw new Error('Subscribing requires a list of subscriptions.')
+  else if(!this.subscriptions)
+    this.subscriptions = subscriptions
+    
   if(typeof this.subscriptions !== 'object') 
     throw new Error('The map of subscriptions must be a generic Javascript object.')
   if(Object.keys(this.subscriptions).length < 1)
@@ -96,6 +99,8 @@ NewsManager.prototype.onFinishCheckingForUpdates = function (callback) {
   return this
 }
 NewsManager.prototype.onNewerContentFound = function (callback) {
+  if(typeof callback !== 'function')
+    throw new TypeError('Only functions can be registered as callbacks. (Received: ' + typeof callback + ')')
   this.onNewerContentFoundHandler = callback
   return this
 }

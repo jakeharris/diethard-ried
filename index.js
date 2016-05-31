@@ -9,6 +9,14 @@ var tm,
     diethard = new Discord.Client(),
     doneUpdating = false
 
+var timeUntilNoon = function () {
+  var now = new Date(),
+      noonTomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+  noonTomorrow.setHours(12, 0, 0, 0)
+  
+  return noonTomorrow - now
+}
+
 diethard.on('message', function(message) {
     if(message.content === 'ping') {
       console.log('ponging...')
@@ -17,13 +25,12 @@ diethard.on('message', function(message) {
 })
 diethard.on('ready', function () {
   while(!doneUpdating) {}
-  for(var s in diethard.servers) {
-    if(!diethard.servers[s]) continue
-    
-    var c = diethard.servers[s].defaultChannel
-    // either #general or the first text channel
-    postAllUpdates(c, nm.updatesReceived)
-  }
+  postAllUpdatesToAllChannels()
+  setTimeout(function () {
+    console.log ('updating from timeout')
+    nm.checkForUpdates()
+    postAllUpdatesToAllChannels()
+  }.bind(this), timeUntilNoon())
 })
 
 nm = new NewsManager('./news', {
@@ -53,13 +60,23 @@ tm = new TokenManager('./tokens').onTokensLoaded(function () {
     })
 }).parseTokens()
 
+var postAllUpdatesToAllChannels = function () {
+  for(var s in diethard.servers) {
+    if(!diethard.servers[s]) continue
+    
+    var c = diethard.servers[s].defaultChannel
+    // either #general or the first text channel
+    postAllUpdates(c, nm.updatesReceived)
+  }
+}
+
 var postAllUpdates = function (channel, updates) {
   for(var u in updates) {
     diethard.sendMessage(channel, '@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':', function () {
       diethard.sendMessage(channel, updates[u].url)
     }.bind(this))
   }
-}  
+}
 
 
 
