@@ -20,7 +20,7 @@ var timeUntilNoon = function () {
 diethard.on('message', function(message) {
     if(message.content === 'ping') {
       console.log('ponging...')
-      diethard.reply(message, 'pong')
+      message.channel.sendMessage('pong')
     }
 })
 diethard.on('ready', function () {
@@ -72,8 +72,8 @@ var postAllUpdatesToAllChannels = function () {
 
 var postAllUpdates = function (channel, updates) {
   for(var u in updates) {
-    diethard.sendMessage(channel, '@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':', function () {
-      diethard.sendMessage(channel, updates[u].url)
+    channel.sendMessage('@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':', function () {
+      channel.sendMessage(updates[u].url)
     }.bind(this))
   }
 }
