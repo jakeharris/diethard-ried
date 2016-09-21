@@ -62,7 +62,7 @@ diethard.on('ready', function () {
     console.log ('updating from timeout')
     nm.checkForUpdates()
     postAllUpdatesToAllChannels()
-  }.bind(this), timeUntilNoon().bind(this))
+  }.bind(this), timeUntilNoon.call(this))
 })
 
 nm = new NewsManager('./news', {
