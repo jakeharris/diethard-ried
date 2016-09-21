@@ -62,10 +62,11 @@ tm = new TokenManager('./tokens').onTokensLoaded(function () {
 }).parseTokens()
 
 var postAllUpdatesToAllChannels = function () {
-  for(var g in diethard.guilds) {
-    if(!diethard.guilds[g]) continue
+  var guilds = diethard.guilds.array()
+  for(var g in guilds) {
+    if(!guilds[g]) continue
     
-    var c = diethard.guilds[g].defaultChannel
+    var c = guilds[g].defaultChannel
     // either #general or the first text channel
     postAllUpdates(c, nm.updatesReceived)
   }
