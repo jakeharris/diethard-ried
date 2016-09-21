@@ -23,11 +23,37 @@ diethard.on('message', function(message) {
       message.channel.sendMessage('pong')
         .catch(console.log);
     }
+    else if(message.content === 'next') {
+      console.log('displaying time until next update batch...')
+
+      var seconds = Math.ceil((this.timeout._idleStart + this.timeout._idleTimeout - Date.now()) / 1000),
+          msg = ''
+
+      console.log(seconds + 's remaining')
+
+      var minutes = parseInt(seconds / 60)
+      if(minutes > 0) seconds -= minutes * 60
+      var hours = parseInt(minutes / 60)
+      if(hours > 0) minutes -= hours * 60
+      var days = parseInt(hours /24)
+      if(days > 0) hours -= days * 24
+
+      if(days > 0)
+        msg = days + ' day' + (days > 1? 's' : '') + ' and ' + hours + ' hour' + (hours > 1? 's' : '') + ' remain before the next update.'
+      else if(hours > 0)
+        msg = hours + ' hour' + (hours > 1? 's' : '') + ' and ' + minutes + ' minute' + (minutes > 1? 's' : '') + ' remain before the next update.'
+      else if(minutes > 0)
+        msg = minutes + ' minute' + (minutes > 1? 's' : '') + ' remain before the next update.'
+
+      if(msg !== '')
+        message.channel.sendMessage('Sir, ' + msg)
+          .catch(console.log)
+    }
 })
 diethard.on('ready', function () {
   while(!doneUpdating) {}
   postAllUpdatesToAllChannels()
-  setTimeout(function () {
+  this.timeout = setTimeout(function () {
     console.log ('updating from timeout')
     nm.checkForUpdates()
     postAllUpdatesToAllChannels()
