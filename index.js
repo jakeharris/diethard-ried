@@ -74,7 +74,7 @@ var postAllUpdatesToAllChannels = function () {
 
 var postAllUpdates = function (channel, updates) {
   for(var u in updates) {
-    channel.sendMessage('@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':', function () {
+    channel.sendMessage('@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':').then(function () {
       channel.sendMessage(updates[u].url)
     }.bind(this))
   }
