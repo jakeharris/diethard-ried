@@ -31,7 +31,7 @@ diethard.on('message', function(message) {
     else if(message.content === 'next') {
       console.log('displaying time until next update batch...')
 
-      var seconds = Math.ceil((this.timeRemaining.getTime() - (new Date().getTime() - this.startTime.getTime())) / 1000),
+      var seconds = Math.ceil((this.timeRemaining - (new Date().getTime() - this.startTime.getTime())) / 1000),
           msg = ''
 
       console.log(seconds + 's remaining')
