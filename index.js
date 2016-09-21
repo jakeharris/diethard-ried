@@ -14,6 +14,11 @@ var timeUntilNoon = function () {
       noonTomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
   noonTomorrow.setHours(12, 0, 0, 0)
   
+  if(!this.startTime)
+    this.startTime = now
+  if(!this.timeRemaining)
+    this.timeRemaining = noonTomorrow - now
+
   return noonTomorrow - now
 }
 
@@ -26,7 +31,7 @@ diethard.on('message', function(message) {
     else if(message.content === 'next') {
       console.log('displaying time until next update batch...')
 
-      var seconds = Math.ceil((this.timeout._idleStart + this.timeout._idleTimeout - Date.now()) / 1000),
+      var seconds = Math.ceil((this.timeRemaining.getTime() - (new Date().getTime() - this.startTime.getTime())) / 1000),
           msg = ''
 
       console.log(seconds + 's remaining')
@@ -53,7 +58,7 @@ diethard.on('message', function(message) {
 diethard.on('ready', function () {
   while(!doneUpdating) {}
   postAllUpdatesToAllChannels()
-  this.timeout = setTimeout(function () {
+  setTimeout(function () {
     console.log ('updating from timeout')
     nm.checkForUpdates()
     postAllUpdatesToAllChannels()
