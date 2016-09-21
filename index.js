@@ -21,7 +21,6 @@ diethard.on('message', function(message) {
     if(message.content === 'ping') {
       console.log('ponging...')
       message.channel.sendMessage('pong')
-        .then(function(m) { console.log('Sent message: ' + m.content) })
         .catch(console.log);
     }
 })
