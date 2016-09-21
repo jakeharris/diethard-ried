@@ -4,7 +4,7 @@
   "description": "A discord bot that will inform us of updates to our favorite games, and an ambitious reporter who loves impactful (and sometimes chaotic) news.",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^7.0.1",
+    "discord.js": "^9.2.0",
     "request": "^2.72.0"
   },
   "devDependencies": {

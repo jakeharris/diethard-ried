@@ -52,9 +52,6 @@ nm = new NewsManager('./news', {
 // tokens should be of the format "<API name> <token>"
 // (that is, space-delimited)
 tm = new TokenManager('./tokens').onTokensLoaded(function () {
-  console.log('%%%%%% TOKENMANAGER %%%%%%')
-  console.log(this.tokens)
-  console.log(this.tokens.discord)
   diethard.login(this.tokens.discord)
     .then(function () { 
       console.log('logged in!') 
