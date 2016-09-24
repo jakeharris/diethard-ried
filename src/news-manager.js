@@ -129,6 +129,8 @@ NewsManager.prototype.writeUpdatesToFile = function () {
 
     // combine the remaining updates into the news object
     // (this should be all updates we didn't already have keys for)
+    console.log(this.updatesReceived)
+
     for(var u in this.updatesReceived)
       if(this.updatesReceived.hasOwnProperty(u))
         news[u] = this.updatesReceived[u]
