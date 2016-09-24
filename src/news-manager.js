@@ -39,6 +39,8 @@ NewsManager.prototype.readNewsFromFile = function () {
     terminal: false      
   })
   rl.on('line', function (line) {
+    if(line.trim() === '') return false
+
     var words = line.split(' ')
     if(words.length !== 2)
       throw new Error('Improper formatting. (Name-timestamp pairs are space-delimited, and separate from the next pair by newline.)')
@@ -143,6 +145,7 @@ NewsManager.prototype.writeUpdatesToFile = function () {
     console.log('3050')
   })
   console.log('1040')
+
 }
 
 
