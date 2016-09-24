@@ -145,7 +145,7 @@ NewsManager.prototype.writeUpdatesToFile = function () {
     console.log('3040')
     ws.end()
     console.log('3050')
-  })
+  }.bind(this))
   console.log('1040')
 
 }
