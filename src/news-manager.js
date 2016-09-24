@@ -81,7 +81,7 @@ NewsManager.prototype.checkForUpdates = function () {
 }
 NewsManager.prototype.writeUpdatesToFile = function () {
 
-  if(!(this.updatesReceived.isArray() && this.updatesReceived.length > 0)) return;
+  if(!(Array.isArray(this.updatesReceived) && this.updatesReceived.length > 0)) return;
 
   // this will be what we write to the file, and will house 100% of the news file's contents
   var news = {}
