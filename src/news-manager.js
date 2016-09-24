@@ -80,22 +80,49 @@ NewsManager.prototype.checkForUpdates = function () {
   }
 }
 NewsManager.prototype.writeUpdatesToFile = function () {
-  throw new Error('Unimplemented.')
 
-  // if(!this.updatesReceived.isArray() || !this.updatesReceived.length > 0) return;
+  if(!(this.updatesReceived.isArray() && this.updatesReceived.length > 0)) return;
 
-  // // TODO: finish this.
-  
-  // // I want something that reads the file first.
-  // // If it's got the same key as an existing entry,
-  // // it should overwrite the value with the new value.
-  // // If it doesn't, it should write a new line 
-  // // with key and value read from the update object.
+  // this will be what we write to the file, and will house 100% of the news file's contents
+  var news = {}
 
-  // var ws = fs.createWriteStream('news', { flag: 'a' })
-  // for(var u in this.updatesReceived)
-  //   ws.write(u + ' ' + this.updatesReceived[u])
+  var rl = readline.createInterface({
+    input: fs.createReadStream(this.filePath),
+    terminal: false      
+  })
+  rl.on('line', function (line) {
 
+    var pair = line.split(' '),
+        k = pair[0],
+        v = pair[1]
+
+    if(pair.length !== 2)
+      return false
+
+    // if we got an update for the key on this line,
+    // then we'll take the new content instead of the old.
+    if(typeof (this.updatesReceived[k]) !== 'undefined') {
+      news[k] = this.updatesReceived[k]
+      delete this.updatesReceived[k]
+    }
+    // otherwise, we'll take the old content.
+    else 
+      news[k] = v
+  }.bind(this)).on('close', function () {
+    
+    // 'w' flag truncates, so we're completely rewriting the file
+    var ws = fs.createWriteStream('news', { flag: 'w' })
+
+    // combine the remaining updates into the news object
+    // (this should be all updates we didn't already have keys for)
+    for(var u in this.updatesReceived)
+      if(this.updatesReceived.hasOwnProperty(u))
+        news[u] = this.updatesReceived[u]
+
+    // write to file
+    for(var n in news)
+      ws.write(n + ' ' + news[n])
+  })
 }
 
 
