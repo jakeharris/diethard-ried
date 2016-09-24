@@ -1,6 +1,9 @@
 # API Tokens
 tokens
 
+# The news, which will update often
+news
+
 # Logs
 logs
 *.log
