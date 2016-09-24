@@ -14,6 +14,11 @@ var timeUntilNoon = function () {
       noonTomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
   noonTomorrow.setHours(12, 0, 0, 0)
   
+  if(!this.startTime)
+    this.startTime = now
+  if(!this.timeRemaining)
+    this.timeRemaining = noonTomorrow - now
+
   return noonTomorrow - now
 }
 
@@ -21,8 +26,33 @@ diethard.on('message', function(message) {
     if(message.content === 'ping') {
       console.log('ponging...')
       message.channel.sendMessage('pong')
-        .then(function(m) { console.log('Sent message: ' + m.content) })
         .catch(console.log);
+    }
+    else if(message.content === 'next') {
+      console.log('displaying time until next update batch...')
+
+      var seconds = Math.ceil((this.timeRemaining - (new Date().getTime() - this.startTime.getTime())) / 1000),
+          msg = ''
+
+      console.log(seconds + 's remaining')
+
+      var minutes = parseInt(seconds / 60)
+      if(minutes > 0) seconds -= minutes * 60
+      var hours = parseInt(minutes / 60)
+      if(hours > 0) minutes -= hours * 60
+      var days = parseInt(hours /24)
+      if(days > 0) hours -= days * 24
+
+      if(days > 0)
+        msg = days + ' day' + (days > 1? 's' : '') + ' and ' + hours + ' hour' + (hours > 1? 's' : '') + ' remain before the next update.'
+      else if(hours > 0)
+        msg = hours + ' hour' + (hours > 1? 's' : '') + ' and ' + minutes + ' minute' + (minutes > 1? 's' : '') + ' remain before the next update.'
+      else if(minutes > 0)
+        msg = minutes + ' minute' + (minutes > 1? 's' : '') + ' remain before the next update.'
+
+      if(msg !== '')
+        message.channel.sendMessage('Sir, ' + msg)
+          .catch(console.log)
     }
 })
 diethard.on('ready', function () {
@@ -32,7 +62,7 @@ diethard.on('ready', function () {
     console.log ('updating from timeout')
     nm.checkForUpdates()
     postAllUpdatesToAllChannels()
-  }.bind(this), timeUntilNoon())
+  }.bind(this), timeUntilNoon.call(this))
 })
 
 nm = new NewsManager('./news', {
@@ -63,10 +93,11 @@ tm = new TokenManager('./tokens').onTokensLoaded(function () {
 }).parseTokens()
 
 var postAllUpdatesToAllChannels = function () {
-  for(var g in diethard.guilds) {
-    if(!diethard.guilds[g]) continue
+  var guilds = diethard.guilds.array()
+  for(var g in guilds) {
+    if(!guilds[g]) continue
     
-    var c = diethard.guilds[g].defaultChannel
+    var c = guilds[g].defaultChannel
     // either #general or the first text channel
     postAllUpdates(c, nm.updatesReceived)
   }
@@ -74,7 +105,7 @@ var postAllUpdatesToAllChannels = function () {
 
 var postAllUpdates = function (channel, updates) {
   for(var u in updates) {
-    channel.sendMessage('@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':', function () {
+    channel.sendMessage('@everyone A new update has been released for ' + u.charAt(0).toUpperCase() + u.slice(1) + ':').then(function () {
       channel.sendMessage(updates[u].url)
     }.bind(this))
   }
