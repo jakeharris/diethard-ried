@@ -112,6 +112,10 @@ NewsManager.prototype.writeUpdatesToFile = function () {
     
     // 'w' flag truncates, so we're completely rewriting the file
     var ws = fs.createWriteStream('news', { flag: 'w' })
+    ws.on('error', function (err) {
+      console.log(err)
+    })
+
 
     // combine the remaining updates into the news object
     // (this should be all updates we didn't already have keys for)
@@ -120,8 +124,12 @@ NewsManager.prototype.writeUpdatesToFile = function () {
         news[u] = this.updatesReceived[u]
 
     // write to file
+    console.log('Writing news...')
+    console.log(news)
     for(var n in news)
       ws.write(n + ' ' + news[n])
+
+    ws.end()
   })
 }
 
