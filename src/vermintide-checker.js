@@ -66,8 +66,7 @@ VermintideChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function
   var blacklist = VermintideChecker.prototype.BLACKLIST,
       whitelist = VermintideChecker.prototype.WHITELIST
     
-  var items = JSON.parse(body).appnews.newsitems.filter(function (e, i, a) {
-    console.log(e.title)
+  var items = JSON.parse(body).appnews.newsitems.filter(function (e) {
     for(var b in blacklist)
       if(e.title.toLowerCase().indexOf(blacklist[b]) !== -1)
         return false

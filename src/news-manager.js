@@ -34,7 +34,7 @@ function NewsManager(filePath, subscriptions) {
 
 NewsManager.prototype.readNewsFromFile = function () {
   // trusting this to throw necessary errors rn...
-  rl = readline.createInterface({
+  var rl = readline.createInterface({
     input: fs.createReadStream(this.filePath),
     terminal: false      
   })
@@ -80,9 +80,22 @@ NewsManager.prototype.checkForUpdates = function () {
   }
 }
 NewsManager.prototype.writeUpdatesToFile = function () {
-  for(var u in this.updatesReceived) {
-    // TODO: write to file
-  }
+  throw new Error('Unimplemented.')
+
+  // if(!this.updatesReceived.isArray() || !this.updatesReceived.length > 0) return;
+
+  // // TODO: finish this.
+  
+  // // I want something that reads the file first.
+  // // If it's got the same key as an existing entry,
+  // // it should overwrite the value with the new value.
+  // // If it doesn't, it should write a new line 
+  // // with key and value read from the update object.
+
+  // var ws = fs.createWriteStream('news', { flag: 'a' })
+  // for(var u in this.updatesReceived)
+  //   ws.write(u + ' ' + this.updatesReceived[u])
+
 }
 
 
