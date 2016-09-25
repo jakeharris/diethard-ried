@@ -24,7 +24,6 @@ var timeUntilNoon = function () {
 
 diethard.on('message', function(message) {
     if(message.content === 'ping') {
-      console.log('ponging...')
       message.channel.sendMessage('pong')
         .catch(console.log);
     }

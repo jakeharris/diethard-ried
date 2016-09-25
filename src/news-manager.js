@@ -83,29 +83,24 @@ NewsManager.prototype.checkForUpdates = function () {
 }
 NewsManager.prototype.writeUpdatesToFile = function () {
 
-  console.log('1000')
   if(Object.keys(this.updatesReceived) < 1) return;
 
-  console.log('1010')
   // this will be what we write to the file, and will house 100% of the news file's contents
   var news = {}
 
-  console.log('1020')
   var rl = readline.createInterface({
     input: fs.createReadStream(this.filePath),
     terminal: false      
   })
-  console.log('1030')
   rl.on('line', function (line) {
 
-    console.log('2000')
     var pair = line.split(' '),
         k = pair[0],
         v = pair[1]
-    console.log('2010')
+
     if(pair.length !== 2)
       return false
-    console.log('2020')
+      
     // if we got an update for the key on this line,
     // then we'll take the new content instead of the old.
     if(typeof (this.updatesReceived[k]) !== 'undefined') {
@@ -115,39 +110,29 @@ NewsManager.prototype.writeUpdatesToFile = function () {
     // otherwise, we'll take the old content.
     else 
       news[k] = v
-    console.log('2030')
+      
   }.bind(this)).on('close', function () {
     
     // 'w' flag truncates, so we're completely rewriting the file
-    console.log('3000')
     var ws = fs.createWriteStream('news', { flag: 'w' })
-    console.log('3010')
     ws.on('error', function (err) {
       console.log(err)
     })
-    console.log('3020')
 
     // combine the remaining updates into the news object
     // (this should be all updates we didn't already have keys for)
-    console.log(this.updatesReceived)
-
     for(var u in this.updatesReceived)
       if(this.updatesReceived.hasOwnProperty(u))
         news[u] = this.updatesReceived[u]
 
-    console.log('3030')
     // write to file
     console.log('Writing news...')
-    console.log(news)
+    console.log(Object.keys(news))
     for(var n in news)
       ws.write(n + ' ' + news[n])
 
-    console.log('3040')
     ws.end()
-    console.log('3050')
   }.bind(this))
-  console.log('1040')
-
 }
 
 
@@ -171,8 +156,7 @@ NewsManager.prototype.onNewerContentFound = function (callback) {
 }
 
 NewsManager.prototype.DEFAULT_ON_FINISH_CHECKING_HANDLER = function (update) {
-  this.checked++ 
-  console.log(update)
+  this.checked++
   if(update) this.onNewerContentFoundHandler(update)
   this.onFinishCheckingForUpdatesHandler()
 }
