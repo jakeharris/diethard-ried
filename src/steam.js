@@ -9,8 +9,3 @@ function Steam (token) {
   this.token = token
 }
 
-Steam.prototype.getNewsForApp = function (app, count, callback) {
-  request('http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=' + app + '&count=' + count + '&format=json', callback)
-}
-
-Steam.prototype.constructor = Steam
