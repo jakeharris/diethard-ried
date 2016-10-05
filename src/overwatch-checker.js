@@ -21,17 +21,6 @@ function OverwatchChecker (date, lists, tokens) {
     if(date !== undefined) {
         this.date = date
     }
-        
-    if(lists) {
-        if(lists.whitelist) 
-        this.whitelist = lists.whitelist
-        if(lists.blacklist)
-        this.blacklist = lists.blacklist
-    }
-    else {
-        this.whitelist = DEFAULT_WHITELIST
-        this.blacklist = DEFAULT_BLACKLIST
-    }
     
     this.onFinishMakingRequestsHandler = this.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER
     this.onFinishCheckingHandler = null
@@ -62,21 +51,11 @@ OverwatchChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function 
   if(err)
     throw new Error(err)
     
-  var blacklist = OverwatchChecker.prototype.BLACKLIST,
-      whitelist = OverwatchChecker.prototype.WHITELIST
-    
   var items = JSON.parse(body).patchNotes.filter(function (e) {
-    for(var b in blacklist)
-      if(e.title.toLowerCase().indexOf(blacklist[b]) !== -1)
-        return false
-        
-    for(var w in whitelist) 
-      if(e.title.toLowerCase().indexOf(whitelist[w]) !== -1)
-        return true
-        
-    return false
+    return e.type === 'RETAIL'  
   }),
       update = null
+  
   
   for(var i in items) {
     var item = items[i]
@@ -97,6 +76,3 @@ OverwatchChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function 
   }
   this.onFinishCheckingHandler(update)
 }
-
-OverwatchChecker.prototype.BLACKLIST = DEFAULT_BLACKLIST
-OverwatchChecker.prototype.WHITELIST = DEFAULT_WHITELIST
