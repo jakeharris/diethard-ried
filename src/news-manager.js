@@ -123,13 +123,13 @@ NewsManager.prototype.writeUpdatesToFile = function () {
     // (this should be all updates we didn't already have keys for)
     for(var u in this.updatesReceived)
       if(this.updatesReceived.hasOwnProperty(u))
-        news[u] = this.updatesReceived[u]
+        news[u] = this.updatesReceived[u].date
 
     // write to file
     console.log('Writing news...')
     console.log(Object.keys(news))
     for(var n in news)
-      ws.write(n + ' ' + news[n])
+      ws.write(n + ' ' + news[n] + '\n')
 
     ws.end()
   }.bind(this))
@@ -167,7 +167,7 @@ NewsManager.prototype.DEFAULT_ON_FINISH_SUBSCRIBING_HANDLER = function () {
   return this.checkForUpdates()
 }
 NewsManager.prototype.DEFAULT_ON_NEWER_CONTENT_FOUND_HANDLER = function (update) {
-  this.updatesReceived[update.name] = update.data.date
+  this.updatesReceived[update.name] = update.data
 }
 
 
