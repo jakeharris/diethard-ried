@@ -82,11 +82,15 @@ OverwatchChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function 
     var item = items[i]
     if(this.date === null || item.date > this.date) {
       this.date = item.date
+
+      var startOfUrl = item.detail.indexOf('href=\"') + 'href=\"'.length,
+          endOfUrl = item.detail.substring(startOfUrl).indexOf('\"') + startOfUrl
+
       update = { 
         name: 'overwatch', 
         data: { 
-          date: item.date, 
-          url: item.url 
+          date: item.created, 
+          url: item.detail.substring(startOfUrl, endOfUrl)
         }
       }
     }
