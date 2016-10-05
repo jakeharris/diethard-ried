@@ -15,8 +15,7 @@ const DEFAULT_WHITELIST = [
 // Subscription service that checks for Overwatch updates.
 // Uses the Steam API.
 // Input: date -- the date of the latest update.
-// Input: lists -- an object {} containing up to two arrays, whitelist and blacklist. Keywords used to filter posts.
-function OverwatchChecker (date, lists, tokens) {
+function OverwatchChecker (date) {
     this.date = null
     if(date !== undefined) {
         this.date = date
@@ -34,7 +33,6 @@ OverwatchChecker.prototype.constructor = OverwatchChecker
 OverwatchChecker.prototype.check = function () {
     request('https://api.lootbox.eu/patch_notes', this.onFinishMakingRequestsHandler.bind(this))
 }
-
 OverwatchChecker.prototype.onFinishMakingRequests = function (callback) {
   this.onFinishMakingRequestsHandler = callback
   return this
@@ -62,14 +60,11 @@ OverwatchChecker.prototype.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER = function 
     if(this.date === null || item.date > this.date) {
       this.date = item.date
 
-      var startOfUrl = item.detail.indexOf('href=\"') + 'href=\"'.length,
-          endOfUrl = item.detail.substring(startOfUrl).indexOf('\"') + startOfUrl
-
       update = { 
         name: 'overwatch', 
         data: { 
           date: item.created, 
-          url: item.detail.substring(startOfUrl, endOfUrl)
+          url: 'http://us.battle.net/forums/en/overwatch/21446648/'
         }
       }
     }
