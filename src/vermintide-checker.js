@@ -44,7 +44,7 @@ function VermintideChecker (date, lists, tokens) {
 }
 
 VermintideChecker.prototype = Object.create(Subscription.prototype)
-VermintideChecker.prototype.constructor = VermintideCheckere
+VermintideChecker.prototype.constructor = VermintideChecker
 
 VermintideChecker.prototype.check = function () {
   this.steam.getNewsForApp(235540, 20, this.onFinishMakingRequestsHandler.bind(this))

@@ -1,7 +1,8 @@
 var Discord = require('discord.js'),
     TokenManager = require('./src/token-manager'),
     NewsManager = require('./src/news-manager'),
-    VermintideChecker = require('./src/vermintide-checker')
+    VermintideChecker = require('./src/vermintide-checker'),
+    OverwatchChecker = require('./src/overwatch-checker')
 
 // list of API tokens
 var tm,
@@ -65,7 +66,8 @@ diethard.on('ready', function () {
 })
 
 nm = new NewsManager('./news', {
-    vermintide: VermintideChecker
+    vermintide: VermintideChecker,
+    overwatch: OverwatchChecker
 }).onFinishCheckingForUpdates(function () {
   console.log(this.checked + '/' + Object.keys(this.subscriptions).length + ' subscriptions checked')
   
