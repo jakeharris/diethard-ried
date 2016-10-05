@@ -17,7 +17,7 @@ const DEFAULT_WHITELIST = [
 // Uses the Steam API.
 // Input: date -- the date of the latest update.
 // Input: lists -- an object {} containing up to two arrays, whitelist and blacklist. Keywords used to filter posts.
-function VermintideChecker (date, lists) {
+function VermintideChecker (date, lists, tokens) {
   
   this.date = null
   if(date !== undefined) {
@@ -37,15 +37,17 @@ function VermintideChecker (date, lists) {
   
   this.onFinishMakingRequestsHandler = this.DEFAULT_ON_FINISH_MAKING_REQUESTS_HANDLER
   this.onFinishCheckingHandler = null
+
+  this.steam = new Steam(tokens.steam? tokens.steam : '')
   
   return this
 }
 
 VermintideChecker.prototype = Object.create(Subscription.prototype)
-VermintideChecker.prototype.constructor = VermintideChecker
+VermintideChecker.prototype.constructor = VermintideCheckere
 
 VermintideChecker.prototype.check = function () {
-  request('http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=235540&count=20&format=json', this.onFinishMakingRequestsHandler.bind(this))
+  this.steam.getNewsForApp(235540, 20, this.onFinishMakingRequestsHandler.bind(this))
 }
 VermintideChecker.prototype.onFinishMakingRequests = function (callback) {
   this.onFinishMakingRequestsHandler = callback
